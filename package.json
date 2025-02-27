@@ -1,5 +1,5 @@
 {
-  "name": "old-multisig",
+  "name": "serrano-multisig",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.in.ripio.com:nicolasmenendez/old-multisig.git"
+    "url": "git@github.com:sserrano44/multisig-code.git"
   },
   "author": "",
   "license": "ISC",
