@@ -46,7 +46,7 @@ scripts/
 3. Create a `.env` file in the root directory and add the following environment variables:
     ```plaintext
     SEPOLIA_RPC_URL=<your-sepolia-rpc-url>
-    PRIVATE_KEY=<your-private-key>
+    LEDGER_ACCOUNT=<your-ledger-address>
     ETHERSCAN_KEY=<your-etherscan-key>
     ```
 
