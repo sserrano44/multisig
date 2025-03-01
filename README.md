@@ -16,6 +16,10 @@ contracts/
 hardhat.config.js
 package.json
 README.md
+scripts/
+    deploy.js
+    deploy-cli.js
+    README.md
 ```
 
 ### Contracts
@@ -41,7 +45,7 @@ README.md
 
 3. Create a `.env` file in the root directory and add the following environment variables:
     ```plaintext
-    GOERLI_RPC_URL=<your-goerli-rpc-url>
+    SEPOLIA_RPC_URL=<your-sepolia-rpc-url>
     PRIVATE_KEY=<your-private-key>
     ETHERSCAN_KEY=<your-etherscan-key>
     ```
@@ -69,10 +73,50 @@ REPORT_GAS=true npx hardhat test
 
 ### Deploy Contracts
 
-To deploy the contracts, you can use the Hardhat scripts. For example:
+This project includes two deployment scripts:
+
+#### Interactive Deployment
+
+To deploy the contracts interactively, run:
 ```shell
-npx hardhat run scripts/deploy.js
+npx hardhat run scripts/deploy.js --network <network-name>
 ```
+
+This script will prompt you for:
+- Number of signers (1-7)
+- Addresses for each signer (or use deployer address)
+- Required number of approvals
+
+#### Command-line Deployment
+
+To deploy using command-line arguments:
+```shell
+npx hardhat run scripts/deploy-cli.js --network <network-name> -- --signers <number-or-addresses> --required <number>
+```
+
+Examples:
+```shell
+# Deploy with 3 signers (using deployer's address) and 2 required approvals
+npx hardhat run scripts/deploy-cli.js --network sepolia -- --signers 3 --required 2
+
+# Deploy with specific signer addresses and 2 required approvals
+npx hardhat run scripts/deploy-cli.js --network sepolia -- --signers 0x123...,0x456...,0x789... --required 2
+```
+
+#### Test Deployment
+
+To test the deployment and basic functionality without user input:
+```shell
+npx hardhat run scripts/test-deploy.js
+```
+
+This script automatically:
+- Deploys the MultiSigWallet with 3 signers and 2 required approvals
+- Verifies the contract state
+- Tests transaction submission and confirmation
+- Checks confirmation status and counts
+
+For more details on all deployment scripts, see [scripts/README.md](scripts/README.md).
 
 ### Hardhat Tasks
 

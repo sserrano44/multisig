@@ -1,18 +1,20 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("@nomicfoundation/hardhat-ledger");
 require("dotenv").config();
 
-const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
 const ETHERSCAN_KEY = process.env.ETHERSCAN_KEY;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   defaultNetwork: "hardhat",
   networks: {
-    goerli: {
-      url: GOERLI_RPC_URL,
-      accounts: [PRIVATE_KEY],
-      chainId: 5,
+    sepolia: {
+      url: SEPOLIA_RPC_URL,
+      ledgerAccounts: [
+        process.env.LEDGER_ACCOUNT,
+      ],
+      chainId: 11155111,
       gasPrice: 100000000000,
     },
   },
