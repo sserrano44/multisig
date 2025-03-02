@@ -45,8 +45,8 @@ test/
 
 1. Clone the repository:
     ```shell
-    git clone git@github.com:sserrano44/multisig-code.git
-    cd multisig-code
+    git clone git@github.com:sserrano44/multisig.git
+    cd multisig
     ```
 
 2. Install dependencies:
