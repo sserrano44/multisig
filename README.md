@@ -19,6 +19,10 @@ README.md
 scripts/
     deploy.js
     deploy-cli.js
+    test-deploy.js
+    submit-transaction.js
+    confirm-transaction.js
+    list-transactions.js
     README.md
 ```
 
@@ -117,6 +121,49 @@ This script automatically:
 - Checks confirmation status and counts
 
 For more details on all deployment scripts, see [scripts/README.md](scripts/README.md).
+
+### Interact with Deployed MultiSigWallet
+
+Once you have deployed a MultiSigWallet contract, you can interact with it using the following scripts:
+
+#### Submit Transactions
+
+To submit a new transaction to the MultiSigWallet:
+```shell
+npx hardhat run scripts/submit-transaction.js --network <network-name>
+```
+
+This script supports:
+- ETH transfers
+- ERC-20 token transfers
+- Custom contract interactions
+
+The script will guide you through the process of creating and submitting a transaction.
+
+#### Confirm Transactions
+
+To confirm a pending transaction:
+```shell
+npx hardhat run scripts/confirm-transaction.js --network <network-name>
+```
+
+This script allows signers to confirm or revoke confirmations for transactions.
+
+#### List Transactions
+
+To view all transactions in the MultiSigWallet:
+```shell
+npx hardhat run scripts/list-transactions.js --network <network-name>
+```
+
+This script displays:
+- MultiSigWallet information
+- List of transactions (filtered by status)
+- Transaction details (destination, value, data, execution status)
+- Confirmation status
+- Option to confirm or revoke confirmations
+
+For more details on all transaction scripts, see [scripts/README.md](scripts/README.md).
 
 ### Hardhat Tasks
 
