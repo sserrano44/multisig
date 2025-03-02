@@ -13,17 +13,24 @@ contracts/
         MultiSigWalletWithDailyLimitFactory.sol
     MultiSigWallet.sol
     MultiSigWalletWithDailyLimit.sol
+    test/
+        RejectEther.sol
+        TestContract.sol
 hardhat.config.js
 package.json
 README.md
 scripts/
     deploy.js
     deploy-cli.js
-    test-deploy.js
     submit-transaction.js
     confirm-transaction.js
     list-transactions.js
     README.md
+test/
+    MultiSigWallet.test.js
+    MultiSigWalletOwnership.test.js
+    MultiSigWalletTransactions.test.js
+    MultiSigWalletEdgeCases.test.js
 ```
 
 ### Contracts
@@ -70,6 +77,12 @@ To run the tests, execute:
 npx hardhat test
 ```
 
+This will run all the test files in the test directory:
+- `MultiSigWallet.test.js` - Tests basic functionality of the MultiSigWallet contract
+- `MultiSigWalletOwnership.test.js` - Tests owner management (adding, removing, replacing owners)
+- `MultiSigWalletTransactions.test.js` - Tests transaction submission, confirmation, and execution
+- `MultiSigWalletEdgeCases.test.js` - Tests edge cases and error conditions
+
 To run the tests with gas reporting, execute:
 ```shell
 REPORT_GAS=true npx hardhat test
@@ -107,18 +120,6 @@ npx hardhat run scripts/deploy-cli.js --network sepolia -- --signers 3 --require
 npx hardhat run scripts/deploy-cli.js --network sepolia -- --signers 0x123...,0x456...,0x789... --required 2
 ```
 
-#### Test Deployment
-
-To test the deployment and basic functionality without user input:
-```shell
-npx hardhat run scripts/test-deploy.js
-```
-
-This script automatically:
-- Deploys the MultiSigWallet with 3 signers and 2 required approvals
-- Verifies the contract state
-- Tests transaction submission and confirmation
-- Checks confirmation status and counts
 
 For more details on all deployment scripts, see [scripts/README.md](scripts/README.md).
 

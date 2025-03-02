@@ -19,6 +19,9 @@ function isValidAddress(address) {
   return ethers.utils.isAddress(address);
 }
 
+// Maximum number of owners allowed
+const MAX_OWNER_COUNT = 7;
+
 async function main() {
   console.log("MultiSigWallet Deployment Script");
   console.log("================================");
@@ -27,69 +30,67 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log(`Deploying from account: ${deployer.address}`);
   
-  // Get the number of signers
+  // Get number of signers
   let numSigners;
-  const MAX_OWNER_COUNT = 7; // From the contract
-  
   while (true) {
-    const numSignersInput = await question(`Enter the number of signers (1-${MAX_OWNER_COUNT}): `);
-    numSigners = parseInt(numSignersInput);
+    const input = await question(`\nEnter the number of signers (1-${MAX_OWNER_COUNT}): `);
+    numSigners = parseInt(input);
     
-    if (!isNaN(numSigners) && numSigners > 0 && numSigners <= MAX_OWNER_COUNT) {
-      break;
+    if (isNaN(numSigners) || numSigners < 1 || numSigners > MAX_OWNER_COUNT) {
+      console.log(`Please enter a valid number between 1 and ${MAX_OWNER_COUNT}.`);
+      continue;
     }
-    console.log(`Please enter a valid number between 1 and ${MAX_OWNER_COUNT}.`);
+    
+    break;
   }
   
   // Get signer addresses
   const signers = [];
-  const signerAddresses = new Set();
+  const signerSet = new Set(); // To check for duplicates
   
   for (let i = 0; i < numSigners; i++) {
-    let signerAddress;
-    
     while (true) {
-      signerAddress = await question(`Enter address for signer ${i + 1} (or press Enter to use deployer address): `);
+      const input = await question(`Enter address for signer ${i + 1} (or press Enter to use deployer address): `);
       
-      // Use deployer address if empty
-      if (signerAddress.trim() === "") {
-        signerAddress = deployer.address;
-        console.log(`Using deployer address: ${deployer.address}`);
-      }
+      // Use deployer address if input is empty
+      const address = input.trim() === "" ? deployer.address : input.trim();
       
-      // Validate address
-      if (!isValidAddress(signerAddress)) {
+      if (!isValidAddress(address)) {
         console.log("Please enter a valid Ethereum address.");
         continue;
       }
       
-      // Check for duplicates
-      if (signerAddresses.has(signerAddress)) {
-        console.log("This address is already added as a signer. Please use a different address.");
+      if (address === ethers.constants.AddressZero) {
+        console.log("Zero address is not allowed as a signer.");
         continue;
       }
       
+      if (signerSet.has(address)) {
+        console.log("This address is already added as a signer. Please enter a different address.");
+        continue;
+      }
+      
+      signers.push(address);
+      signerSet.add(address);
       break;
     }
-    
-    signers.push(signerAddress);
-    signerAddresses.add(signerAddress);
   }
   
   // Get required approvals
   let requiredApprovals;
-  
   while (true) {
-    const requiredApprovalsInput = await question(`Enter the required number of approvals (1-${numSigners}): `);
-    requiredApprovals = parseInt(requiredApprovalsInput);
+    const input = await question(`\nEnter the required number of approvals (1-${numSigners}): `);
+    requiredApprovals = parseInt(input);
     
-    if (!isNaN(requiredApprovals) && requiredApprovals > 0 && requiredApprovals <= numSigners) {
-      break;
+    if (isNaN(requiredApprovals) || requiredApprovals < 1 || requiredApprovals > numSigners) {
+      console.log(`Please enter a valid number between 1 and ${numSigners}.`);
+      continue;
     }
-    console.log(`Please enter a valid number between 1 and ${numSigners}.`);
+    
+    break;
   }
   
-  // Confirm deployment details
+  // Display deployment details
   console.log("\nDeployment Details:");
   console.log("------------------");
   console.log(`Number of signers: ${numSigners}`);
@@ -99,9 +100,9 @@ async function main() {
   });
   console.log(`Required approvals: ${requiredApprovals}`);
   
-  const confirmDeploy = await question("\nDeploy with these parameters? (y/n): ");
-  
-  if (confirmDeploy.toLowerCase() !== 'y') {
+  // Confirm deployment
+  const confirm = await question("\nDeploy with these parameters? (y/n): ");
+  if (confirm.toLowerCase() !== "y") {
     console.log("Deployment cancelled.");
     rl.close();
     return;
@@ -118,13 +119,17 @@ async function main() {
   console.log(`\nMultiSigWallet deployed to: ${multiSigWallet.address}`);
   console.log(`Transaction hash: ${multiSigWallet.deployTransaction.hash}`);
   
-  // Verify contract on Etherscan if not on local network
+  // Display deployment summary
+  console.log("\nDeployment Summary:");
+  console.log("------------------");
+  console.log(`Network: ${network.name}`);
+  console.log(`Contract address: ${multiSigWallet.address}`);
+  console.log(`Number of signers: ${numSigners}`);
+  console.log(`Required approvals: ${requiredApprovals}`);
+  
+  // Verify contract on Etherscan if not on a local network
   if (network.name !== "hardhat" && network.name !== "localhost") {
-    console.log("\nWaiting for block confirmations before verification...");
-    // Wait for 5 block confirmations
-    await multiSigWallet.deployTransaction.wait(5);
-    
-    console.log("Verifying contract on Etherscan...");
+    console.log("\nVerifying contract on Etherscan...");
     try {
       await hre.run("verify:verify", {
         address: multiSigWallet.address,
@@ -132,17 +137,9 @@ async function main() {
       });
       console.log("Contract verified on Etherscan!");
     } catch (error) {
-      console.log("Error verifying contract:", error.message);
+      console.log("Error verifying contract on Etherscan:", error.message);
     }
   }
-  
-  // Log deployment summary
-  console.log("\nDeployment Summary:");
-  console.log("------------------");
-  console.log(`Network: ${network.name}`);
-  console.log(`Contract address: ${multiSigWallet.address}`);
-  console.log(`Number of signers: ${numSigners}`);
-  console.log(`Required approvals: ${requiredApprovals}`);
   
   rl.close();
 }
@@ -151,5 +148,6 @@ main()
   .then(() => process.exit(0))
   .catch((error) => {
     console.error(error);
+    rl.close();
     process.exit(1);
   });

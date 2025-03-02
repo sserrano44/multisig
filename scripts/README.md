@@ -115,37 +115,6 @@ npx hardhat run scripts/deploy-cli.js --network sepolia -- --signers 0x123...,0x
 npx hardhat run scripts/deploy-cli.js --network sepolia
 ```
 
-### test-deploy.js (Testing)
-
-A script for testing the deployment and basic functionality of the MultiSigWallet contract without requiring user input.
-
-#### Features
-
-- Automatically deploys the MultiSigWallet with 3 signers and 2 required approvals
-- Uses the Hardhat default signers for testing
-- Verifies the contract state after deployment
-- Tests transaction submission and confirmation
-- Checks confirmation status and counts
-
-#### Usage
-
-To run the test deployment script:
-
-```bash
-npx hardhat run scripts/test-deploy.js
-```
-
-This script is intended to be run on the Hardhat network for testing purposes. It will:
-
-1. Deploy the MultiSigWallet contract with 3 signers and 2 required approvals
-2. Verify the contract state (owners and required approvals)
-3. Submit a test transaction from the first signer
-4. Confirm the transaction with the second signer
-5. Check if the transaction is confirmed
-6. Get the confirmation count and list of confirmations
-
-This is useful for quickly verifying that the contract deployment and basic functionality work as expected before deploying to a testnet or mainnet.
-
 ## Transaction Scripts
 
 ### submit-transaction.js
