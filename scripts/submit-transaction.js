@@ -1,5 +1,6 @@
 const { ethers } = require("hardhat");
 const readline = require("readline");
+const { simulateFullExecutionPath } = require("./utils/tenderly");
 
 // Create readline interface for user input
 const rl = readline.createInterface({
