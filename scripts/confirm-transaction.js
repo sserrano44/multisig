@@ -1,5 +1,7 @@
 const { ethers } = require("hardhat");
 const readline = require("readline");
+require("dotenv").config();
+const { simulateWithTenderly } = require("./utils/tenderly");
 
 // Create readline interface for user input
 const rl = readline.createInterface({
@@ -82,6 +84,7 @@ async function main() {
     console.log("------------------");
     console.log(`Destination: ${transaction.destination}`);
     console.log(`Value: ${ethers.utils.formatEther(transaction.value)} ETH`);
+    console.log(`Data: ${transaction.data}`);
     console.log(`Executed: ${transaction.executed}`);
     
     if (transaction.executed) {
@@ -105,7 +108,7 @@ async function main() {
       console.log("\nYou have already confirmed this transaction.");
       
       // Ask if they want to revoke the confirmation
-      const revoke = await question("Do you want to revoke your confirmation? (y/n): ");
+      const revoke = await question("\nDo you want to revoke your confirmation? (y/n): ");
       if (revoke.toLowerCase() === "y") {
         console.log("\nRevoking confirmation...");
         
@@ -137,6 +140,12 @@ async function main() {
       for (const confirmer of confirmations) {
         console.log(`- ${confirmer}`);
       }
+    }
+    
+    // Ask if they want to simulate the transaction using Tenderly
+    const simulateTenderly = await question("\nDo you want to simulate this transaction using Tenderly before confirming? (y/n): ");
+    if (simulateTenderly.toLowerCase() === "y") {
+      await simulateWithTenderly(transaction, multiSigWallet, transactionId, signer.address);
     }
     
     // Ask if they want to confirm the transaction
