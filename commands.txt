@@ -1,0 +1,14 @@
+USDT: 0x509b30bc361ba6f0bae8fb0fe06904646853aa0a
+
+multisig: 0x2aAce666e0651F07cb102a57F5cA2Ae7b1BE25B2
+
+HW_owner1: 0xBbD8a537632BD7132d6227268C54df4D800ff02d
+HW_owner2: 0x8eb63E8242D68dEd48501ee3B1a5Ba99b7eBE91d
+
+foundry cast
+cast calldata "transfer(address,uint256)" 0xBbD8a537632BD7132d6227268C54df4D800ff02d 1000000
+data: 0xa9059cbb000000000000000000000000bbd8a537632bd7132d6227268c54df4d800ff02d00000000000000000000000000000000000000000000000000000000000f4240
+
+npx hardhat run scripts/submit-transaction.js --network sepolia
+
+npx hardhat run scripts/confirm-transaction.js --network sepolia
