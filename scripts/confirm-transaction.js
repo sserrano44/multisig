@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 const readline = require("readline");
 require("dotenv").config();
-const { simulateWithTenderly } = require("./utils/tenderly");
+const { simulateWithTenderly, simulateFullExecutionPath } = require("./utils/tenderly");
 
 // Create readline interface for user input
 const rl = readline.createInterface({
@@ -143,9 +143,15 @@ async function main() {
     }
     
     // Ask if they want to simulate the transaction using Tenderly
-    const simulateTenderly = await question("\nDo you want to simulate this transaction using Tenderly before confirming? (y/n): ");
-    if (simulateTenderly.toLowerCase() === "y") {
-      await simulateWithTenderly(transaction, multiSigWallet, transactionId, signer.address);
+    const simulateOptions = await question(
+      "\nSimulation options:\n" +
+      "1. Simulate full execution path (all remaining signers and execution)\n" +
+      "2. Skip simulation\n" +
+      "Select an option (1-2): "
+    );
+    
+    if (simulateOptions === "1") {
+      await simulateFullExecutionPath(transaction, multiSigWallet, transactionId, signer.address);
     }
     
     // Ask if they want to confirm the transaction
