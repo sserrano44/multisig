@@ -145,15 +145,12 @@ async function main() {
     // Ask if they want to simulate the transaction using Tenderly
     const simulateOptions = await question(
       "\nSimulation options:\n" +
-      "1. Simulate only this confirmation\n" +
-      "2. Simulate full execution path (all remaining signers and execution)\n" +
-      "3. Skip simulation\n" +
-      "Select an option (1-3): "
+      "1. Simulate full execution path (all remaining signers and execution)\n" +
+      "2. Skip simulation\n" +
+      "Select an option (1-2): "
     );
     
     if (simulateOptions === "1") {
-      await simulateWithTenderly(transaction, multiSigWallet, transactionId, signer.address);
-    } else if (simulateOptions === "2") {
       await simulateFullExecutionPath(transaction, multiSigWallet, transactionId, signer.address);
     }
     
